@@ -18,9 +18,11 @@ app.get("/", (req, res) => {
     res.send('hej')
 })
 
+app.use(express.static('public'))
+
 app.get("/throwers", (req, res) => {
     var sql = `SELECT * FROM thrower`
-    var params = []
+    var                                                                                                                                                                                           params = []
     db.all(sql, params, (err, rows) => {
         if(err){
             res.status(400).json({"error":err.message});
