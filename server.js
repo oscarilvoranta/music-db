@@ -3,7 +3,7 @@ const app = express()
 const port = 8000
 
 const sqlite3 = require('sqlite3').verbose()
-const DBSOURCE = "fb.db"
+const DBSOURCE = "music.db"
 let db = new sqlite3.Database(DBSOURCE, (err) => {
     if(err){
         console.log(err.message)
@@ -52,12 +52,12 @@ app.get("/hole", (req, res) => {
 
 
 app.get("/hmm", (req, res) => {
-    var sql = `SELECT thrower.name, hole.nr, result.result
-    FROM thrower
-    INNER JOIN result
-    ON thrower.id = result.thrower_id
-    INNER JOIN hole
-    ON result.hole_id = hole.nr`
+    var sql = `SELECT artist.name, song.songname
+    FROM artist
+    LEFT JOIN artist_song
+    ON artist.id = artist_song.artist_id
+    LEFT JOIN song
+    ON artist_song.song_id = song.id`
     var params = []
     db.all(sql, params, (err, rows) => {
         if(err){
@@ -71,5 +71,8 @@ app.get("/hmm", (req, res) => {
     })
 })
 
+app.post("/add", function(req, res){
+
+})
 
 app.listen(port, () => console.log(`hmm ${port}`))
