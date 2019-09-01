@@ -44,6 +44,21 @@ app.get("/hmm", (req, res) => {
     })
 })
 
+app.get("/artists", (req, res) => {
+    var sql = `SELECT * FROM artist`
+    var params = []
+    db.all(sql, params, (err, rows) => {
+        if(err){
+            res.status(400).json({"error":err.message});
+            return;
+        }
+        res.json({
+            "message":"success",
+            "data":rows
+        })
+    })
+})
+
 app.get("/delete/:id/:id2", (req, res, next) => {
     var id = req.params.id
     var id2 = req.params.id2
@@ -66,36 +81,41 @@ app.get("/delete/:id/:id2", (req, res, next) => {
     })
   })
 
-app.post("/add", function(req, res){
+app.post("/addArtist", function(req, res){
     console.log(req.body)
     var artist = req.body.artist;
-    var song = req.body.song;
-    var id1;
-    var id2;
-
 
     db.run(`INSERT INTO artist (name) VALUES('${artist}')`, function(err){
         if (err){
             return console.log(err.message);
         }
-        id1 = this.lastID;
         console.log(`1 inserted rowId: ${this.lastID}`)
+        res.redirect('/table.html')
+    })
+
+})
+
+app.post("/addSong", function(req, res){
+    console.log(req.body)
+    var artistId = req.body.artistlist;
+    var song = req.body.song;
+    var id2;
+
+
         db.run(`INSERT INTO song (songname) VALUES('${song}')`, function(err){
             if(err){
                 return console.log(err.message);
             }
             id2 = this.lastID;
-            console.log(`2 inserted rowId: ${this.lastID}`);
-            db.run(`INSERT INTO artist_song (artist_id, song_id) VALUES('${id1}', '${id2}')`, function(err){
+            console.log(`1 inserted rowId: ${this.lastID}`);
+            db.run(`INSERT INTO artist_song (artist_id, song_id) VALUES('${artistId}', '${id2}')`, function(err){
                 if(err){
                     return console.log(err.message);
                 }
-                console.log(`3 inserted rowId: ${this.lastID}`);
-                res.send('hej')
+                console.log(`2 inserted rowId: ${this.lastID}`);
+                res.redirect('/table.html')
             })
         })
     })
-
-})
 
 app.listen(port, () => console.log(`hmm ${port}`))

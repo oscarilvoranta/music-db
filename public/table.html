@@ -13,33 +13,54 @@
   <script type="text/javascript" src="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.js"></script>
 <body>
     <table id="myTable" class="display" cellspacing="0" width="100%">
-        <thead>
-            
-        </thead>
-        
+ 
     </table>
-    <form method="POST" action="/add">
+    <form id="artist" method="POST" action="/addArtist">
+        Add Artist:
         <input type="text" name="artist">
+        <input class="btn" type="submit" value="Add">
+    </form>
+    <form id="song" method="POST" action="/addSong">
+        Add Song:
+        <select id="al" name="artistlist" form="song">
+        </select>
         <input type="text" name="song">
-        <input type="submit">
+        <input class="btn" type="submit" value="Add">
     </form>
 </body>
 <script>
     function getAll(){
-        var x = "<tr><th>Artist ID</th><th>Artist</th><th>Song</th></tr>";
+        var x = "<tr><th>Artist ID</th><th>Artist</th><th>Song</th><th> </th></tr>";
+        var y;
             $.ajax({
                 url: "http://localhost:8000/hmm",
                 async: false,
                 dataType: 'json',
                 success: function (data) {
 					for (var i = 0, len = data.data.length; i < len; i++) {
-                        x += "<tr><td>"+data.data[i].id+"</td><td>"+data.data[i].name+"</td><td>"+data.data[i].songname+"</td><td><button class='btn' onclick='deleteSong("+data.data[i].id3+","+data.data[i].id2+")'>Delete</button></td></tr>"
+                        x += "<tr><td>"+data.data[i].id+"</td><td>"+data.data[i].name+"</td><td>"+data.data[i].songname+"</td><td><button class='btn' onclick='deleteSong("+data.data[i].id3+","+data.data[i].id2+")'>Delete</button></td></tr>";
                         /*
 						var desc = data.data[i].name;
                         arrayReturn.push([ data.data[i].name , data.data[i].nr, data.data[i].result]);
                         */
                     }
-                document.getElementById("myTable").innerHTML = x    
+                document.getElementById("myTable").innerHTML = x
+				//inittable(arrayReturn);
+                }
+            });
+            $.ajax({
+                url: "http://localhost:8000/artists",
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+					for (var i = 0, len = data.data.length; i < len; i++) {
+                        y += `<option value="${data.data[i].id}">${data.data[i].name}</option>`
+                        /*
+						var desc = data.data[i].name;
+                        arrayReturn.push([ data.data[i].name , data.data[i].nr, data.data[i].result]);
+                        */
+                    }
+                document.getElementById("al").innerHTML = y  
 				//inittable(arrayReturn);
                 }
             });
@@ -83,16 +104,19 @@
         color: white;
         border: none;
         width: 60px;
-        height: 20px;
-    }
-    #add{
-        width: 100%;
-        height: 40px;
+        height: 30px;
     }
     input[type="text"]{
         margin: 10px;
         height: 30px;
-        font-size: 25px;
+        font-size: 19px;
+        width: 200px;
+    }
+    select{
+        margin: 10px;
+        height: 30px;
+        font-size: 19px;
+        width: 200px;
     }
     input[type="button"]{
         width: 100%;
