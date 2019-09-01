@@ -18,21 +18,22 @@
         </thead>
         
     </table>
-    <form method="POST" action="">
+    <form method="POST" action="/add">
         <input type="text" name="artist">
         <input type="text" name="song">
         <input type="submit">
     </form>
 </body>
 <script>
-    var x = "<tr><th>Artist</th><th>Song</th></tr>";
-    $.ajax({
+    function getAll(){
+        var x = "<tr><th>Artist ID</th><th>Artist</th><th>Song</th></tr>";
+            $.ajax({
                 url: "http://localhost:8000/hmm",
                 async: false,
                 dataType: 'json',
                 success: function (data) {
 					for (var i = 0, len = data.data.length; i < len; i++) {
-                        x += "<tr><td>"+data.data[i].name+"</td><td>"+data.data[i].songname+"</td></tr>"
+                        x += "<tr><td>"+data.data[i].id+"</td><td>"+data.data[i].name+"</td><td>"+data.data[i].songname+"</td><td><button class='btn' onclick='deleteSong("+data.data[i].id3+","+data.data[i].id2+")'>Delete</button></td></tr>"
                         /*
 						var desc = data.data[i].name;
                         arrayReturn.push([ data.data[i].name , data.data[i].nr, data.data[i].result]);
@@ -42,27 +43,18 @@
 				//inittable(arrayReturn);
                 }
             });
-    /*
-    var arrayReturn = [];
-            $.ajax({
-                url: "http://localhost:8000/hmm",
-                async: false,
-                dataType: 'json',
-                success: function (data) {
-					for (var i = 0, len = data.data.length; i < len; i++) {
-						var desc = data.data[i].name;
-						arrayReturn.push([ data.data[i].name , data.data[i].nr, data.data[i].result]);
-					}
-				inittable(arrayReturn);
-                }
-            });
-            function inittable(data) {	
-		//console.log(data);
-		$('#myTable').DataTable( {
-			"aaData": data
-		} );
     }
-    */
+    
+    
+    function deleteSong(id, id2){
+        $.get(`/delete/${id}/${id2}`, function(result) {
+            console.log("deleted");
+            getAll();
+        })
+    }
+    $(document).ready(function(){
+        getAll();
+    })  
 </script>
 <style>
     #myTable{
